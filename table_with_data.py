@@ -25,7 +25,7 @@ def main():
         teacher_name = fake.name()
         cursor.execute("INSERT INTO teachers (name) VALUES (?)", (teacher_name,))
 
-        for _ in range(random.randint(5, 8)):
+        for _ in range(random.randint(2, 5)):
             subject_name = fake.word()
             cursor.execute("INSERT INTO subjects (name, teacher_id) VALUES (?, ?)", (subject_name, cursor.lastrowid))
 
@@ -34,11 +34,18 @@ def main():
 
     for student_id in students_ids:
         for subject_id in subjects_ids:
-            grade = random.randint(1, 12)
+            grade = random.randint(0, 100)
             date = fake.date_between(start_date='-1y', end_date='today')
             cursor.execute("INSERT INTO grades (student_id, subject_id, grade, date) VALUES (?, ?, ?, ?)",
                            (student_id, subject_id, grade, date))
 
+    for _ in range(50):
+        student_id = random.randint(1, 50)
+        subject_id = random.randint(1, 9)
+
+        cursor.execute("INSERT INTO enrollments (student_id, subject_id) VALUES (?, ?)", (student_id, subject_id))
+
+    logging.info("Данные внесены в таблицы")
     conn.commit()
     logging.info("Данные сохранены успешно")
     conn.close()
